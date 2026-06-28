@@ -9,4 +9,8 @@ __pycache__/
 node_modules/
 dist/
 
+# Env
+.env
+.venv/
+
 .md

@@ -39,7 +39,7 @@ const TicketRow = ({ ticket, adminToken }: RowProps) => {
             </option>
           ))}
         </select>
-        {updateStatus.error && <span> {(updateStatus.error as Error).message}</span>}
+        {updateStatus.error && <span> {updateStatus.error.message}</span>}
       </td>
       <td>{ticket.priority}</td>
       <td>{new Date(ticket.created_at).toLocaleString()}</td>
@@ -48,7 +48,7 @@ const TicketRow = ({ ticket, adminToken }: RowProps) => {
           <button onClick={handleDelete} disabled={deleteTicket.isPending}>
             Delete
           </button>
-          {deleteTicket.error && <span> {(deleteTicket.error as Error).message}</span>}
+          {deleteTicket.error && <span> {deleteTicket.error.message}</span>}
         </td>
       )}
     </tr>

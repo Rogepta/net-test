@@ -16,11 +16,11 @@
 ```bash
 cd backend
 
-python -m venv .venv
+python -m venv venv
 # Windows
-.venv\Scripts\activate
+venv\Scripts\activate
 # Linux / macOS
-source .venv/bin/activate
+source venv/bin/activate
 
 pip install -r requirements.txt
 
@@ -41,6 +41,8 @@ npm run dev
 ```
 
 Приложение доступно на `http://localhost:5173`.
+
+Адрес API задаётся переменной `VITE_API_URL` (см. `.env.example`); по умолчанию `http://localhost:8000`.
 
 ---
 
@@ -84,9 +86,9 @@ npm run dev
 | `page` | int | `1` | Номер страницы |
 | `page_size` | int | `10` | Записей на странице (1–100) |
 | `status` | string | — | Фильтр по статусу: `new`, `in_progress`, `done` |
-| `priority` | string | — | Фильтр по приоритету: `low`, `medium`, `high` |
+| `priority` | string | — | Фильтр по приоритету: `low`, `normal`, `high` |
 | `search` | string | — | Полнотекстовый поиск по заголовку и описанию |
-| `sort_by` | string | `created_at` | Поле сортировки: `created_at`, `priority`, `status` |
+| `sort_by` | string | `created_at` | Поле сортировки: `created_at`, `priority` |
 | `order` | string | `desc` | Порядок: `asc`, `desc` |
 
 ### Прочее

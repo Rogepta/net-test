@@ -7,10 +7,10 @@ const request = async <T>(path: string, options?: RequestInit): Promise<T> => {
   if (!res.ok) {
     let detail = res.statusText
     try {
-      const body = await res.json()
+      const body = (await res.json()) as { detail?: string }
       if (body.detail) detail = body.detail
     } catch {
-      // ignore parse error
+      detail = res.statusText
     }
     throw new Error(detail)
   }

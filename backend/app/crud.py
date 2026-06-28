@@ -2,7 +2,7 @@ from sqlalchemy import case
 from sqlalchemy.orm import Session
 
 from app.models import Ticket, TicketPriority, TicketStatus
-from app.schemas import SortBy, SortOrder, TicketCreate, TicketStatusUpdate
+from app.schemas import SortBy, SortOrder, TicketCreate
 
 _PRIORITY_ORDER = case(
     (Ticket.priority == TicketPriority.low, 1),
@@ -19,18 +19,14 @@ def create_ticket(db: Session, data: TicketCreate) -> Ticket:
     return ticket
 
 
-def update_ticket_status(db: Session, ticket_id: int, data: TicketStatusUpdate) -> Ticket:
-    ticket = db.get(Ticket, ticket_id)
-    if ticket is None:
-        return None
-    ticket.status = data.status
+def update_ticket_status(db: Session, ticket: Ticket, status: TicketStatus) -> Ticket:
+    ticket.status = status
     db.commit()
     db.refresh(ticket)
     return ticket
 
 
-def delete_ticket(db: Session, ticket_id: int) -> None:
-    ticket = db.get(Ticket, ticket_id)
+def delete_ticket(db: Session, ticket: Ticket) -> None:
     db.delete(ticket)
     db.commit()
 
