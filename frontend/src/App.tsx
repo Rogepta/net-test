@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import AdminLogin from './components/AdminLogin'
 import CreateTicketForm from './components/CreateTicketForm'
 import FilterBar from './components/FilterBar'
 import Pagination from './components/Pagination'
@@ -17,6 +18,7 @@ const DEFAULT_PARAMS: TicketQueryParams = {
 export default function App() {
   const [params, setParams] = useState<TicketQueryParams>(DEFAULT_PARAMS)
   const [searchInput, setSearchInput] = useState('')
+  const [adminToken, setAdminToken] = useState<string | null>(null)
   const debouncedSearch = useDebounce(searchInput, 300)
 
   useEffect(() => {
@@ -48,6 +50,11 @@ export default function App() {
   return (
     <div>
       <CreateTicketForm />
+      {adminToken ? (
+        <p>Admin logged in. <button onClick={() => setAdminToken(null)}>Logout</button></p>
+      ) : (
+        <AdminLogin onLogin={setAdminToken} />
+      )}
       <FilterBar
         search={searchInput}
         status={params.status ?? ''}
@@ -65,6 +72,7 @@ export default function App() {
         isLoading={isLoading}
         isError={isError}
         error={error instanceof Error ? error : null}
+        adminToken={adminToken}
       />
       <Pagination
         page={params.page}
