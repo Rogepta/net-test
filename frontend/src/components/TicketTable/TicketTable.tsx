@@ -25,7 +25,7 @@ const TableHead = () => (
     <span>Заголовок</span>
     <span>Описание</span>
     <span>Статус</span>
-    <span>Приоритет</span>
+    <span className={styles.priorityCol}>Приоритет</span>
     <span>Создана</span>
     <span />
   </div>
@@ -71,7 +71,7 @@ const TicketRow = ({ ticket, adminToken }: RowProps) => {
           </option>
         ))}
       </select>
-      <span>
+      <span className={styles.priorityCol}>
         <span className={`${styles.priority} ${PRIORITY_CLASS[ticket.priority]}`}>{ticket.priority}</span>
       </span>
       <span className={styles.created}>{new Date(ticket.created_at).toLocaleString()}</span>

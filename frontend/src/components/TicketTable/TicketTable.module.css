@@ -40,6 +40,10 @@
   font-size: 13px;
   font-weight: 500;
   color: var(--text-primary);
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .titleDone {
@@ -98,6 +102,10 @@
 .statusSelect:disabled {
   opacity: 0.65;
   cursor: not-allowed;
+}
+
+.priorityCol {
+  text-align: center;
 }
 
 .priority {
