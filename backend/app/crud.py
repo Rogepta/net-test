@@ -53,7 +53,8 @@ def get_tickets(
         )
 
     sort_col = _PRIORITY_ORDER if sort_by == SortBy.priority else Ticket.created_at
-    q = q.order_by(sort_col.desc() if order == SortOrder.desc else sort_col.asc())
+    primary = sort_col.desc() if order == SortOrder.desc else sort_col.asc()
+    q = q.order_by(primary, Ticket.id.desc())
 
     total = q.count()
     items = q.offset((page - 1) * page_size).limit(page_size).all()

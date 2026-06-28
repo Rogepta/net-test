@@ -1,8 +1,8 @@
 import enum
 import math
-from datetime import datetime
+from datetime import datetime, timezone
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_serializer
 
 from app.models import TicketPriority, TicketStatus
 
@@ -33,6 +33,12 @@ class TicketRead(BaseModel):
     priority: TicketPriority
     created_at: datetime
     updated_at: datetime
+
+    @field_serializer("created_at", "updated_at")
+    def serialize_utc(self, value: datetime) -> str:
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=timezone.utc)
+        return value.isoformat()
 
 
 class TicketStatusUpdate(BaseModel):
