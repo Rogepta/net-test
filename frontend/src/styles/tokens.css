@@ -1,0 +1,58 @@
+:root {
+  --accent: #3155d4;
+  --accent-hover: #2a49bd;
+  --accent-soft: #eef1fd;
+
+  --bg-page: #f6f6f7;
+  --bg-card: #ffffff;
+  --bg-subtle: #fbfbfc;
+  --bg-row-hover: #fafafa;
+
+  --text-primary: #1c1c1f;
+  --text-secondary: #3c3c43;
+  --text-muted: #6e6e76;
+  --text-faint: #9a9aa2;
+  --text-disabled: #c2c2c8;
+
+  --border: #e0e0e4;
+  --border-soft: #e6e6ea;
+  --border-card: #ebebee;
+  --divider: #f0f0f2;
+  --divider-row: #f4f4f6;
+
+  --radius-sm: 6px;
+  --radius: 7px;
+  --radius-md: 8px;
+  --radius-card: 10px;
+
+  --status-new-fg: #3a55c9;
+  --status-new-bg: #eef1fd;
+  --status-new-border: #dbe1fb;
+  --status-progress-fg: #b5731a;
+  --status-progress-bg: #fdf3e3;
+  --status-progress-border: #f5e4c6;
+  --status-done-fg: #3f8c5a;
+  --status-done-bg: #ecf6ef;
+  --status-done-border: #d8eddf;
+
+  --prio-low-fg: #71717a;
+  --prio-low-bg: #f1f1f3;
+  --prio-normal-fg: #3a55c9;
+  --prio-normal-bg: #eef1fd;
+  --prio-high-fg: #c4453c;
+  --prio-high-bg: #fdeceb;
+
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg-page);
+  font-family: var(--font);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}

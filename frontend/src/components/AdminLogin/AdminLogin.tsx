@@ -1,5 +1,6 @@
 import { type FormEvent, useState } from 'react'
-import { login } from '../api'
+import { login } from '../../api'
+import styles from './AdminLogin.module.css'
 
 interface Props {
   onLogin: (token: string) => void
@@ -26,22 +27,24 @@ const AdminLogin = ({ onLogin }: Props) => {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className={styles.form} onSubmit={handleSubmit}>
       <input
+        className={styles.input}
         value={username}
         placeholder="Username"
         onChange={(e) => setUsername(e.target.value)}
       />
       <input
+        className={styles.input}
         type="password"
         value={password}
         placeholder="Password"
         onChange={(e) => setPassword(e.target.value)}
       />
-      <button type="submit" disabled={loading}>
-        Login
+      <button className={styles.loginBtn} type="submit" disabled={loading}>
+        Войти
       </button>
-      {error && <span> {error}</span>}
+      {error && <span className={styles.error}>{error}</span>}
     </form>
   )
 }
