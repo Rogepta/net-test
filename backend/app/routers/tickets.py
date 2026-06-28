@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 from app import crud, schemas
+from app.auth import require_admin
 from app.database import get_db
 from app.models import Ticket, TicketPriority, TicketStatus
 
@@ -44,3 +45,20 @@ def update_ticket_status(
             detail="Нельзя изменить статус завершённой заявки",
         )
     return crud.update_ticket_status(db, ticket_id, data)
+
+
+@router.delete("/{ticket_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_ticket(
+    ticket_id: int,
+    db: Session = Depends(get_db),
+    _: str = Depends(require_admin),
+):
+    ticket = db.get(Ticket, ticket_id)
+    if ticket is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Заявка не найдена")
+    if ticket.status == TicketStatus.done:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Нельзя удалить завершённую заявку",
+        )
+    crud.delete_ticket(db, ticket_id)

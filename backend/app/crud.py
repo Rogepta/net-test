@@ -29,6 +29,12 @@ def update_ticket_status(db: Session, ticket_id: int, data: TicketStatusUpdate) 
     return ticket
 
 
+def delete_ticket(db: Session, ticket_id: int) -> None:
+    ticket = db.get(Ticket, ticket_id)
+    db.delete(ticket)
+    db.commit()
+
+
 def get_tickets(
     db: Session,
     page: int,

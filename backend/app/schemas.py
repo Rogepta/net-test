@@ -39,6 +39,16 @@ class TicketStatusUpdate(BaseModel):
     status: TicketStatus
 
 
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+
+
 class PaginatedTickets(BaseModel):
     items: list[TicketRead]
     total: int
