@@ -1,0 +1,66 @@
+import type { PaginatedResponse, Priority, Status, Ticket, TicketQueryParams } from './types'
+
+const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8000'
+
+async function request<T>(path: string, options?: RequestInit): Promise<T> {
+  const res = await fetch(`${BASE_URL}${path}`, options)
+  if (!res.ok) {
+    let detail = res.statusText
+    try {
+      const body = await res.json()
+      if (body.detail) detail = body.detail
+    } catch {
+      // ignore parse error
+    }
+    throw new Error(detail)
+  }
+  if (res.status === 204) return undefined as T
+  return res.json()
+}
+
+export async function fetchTickets(params: TicketQueryParams): Promise<PaginatedResponse<Ticket>> {
+  const query = new URLSearchParams()
+  query.set('page', String(params.page))
+  query.set('page_size', String(params.pageSize))
+  query.set('sort_by', params.sortBy)
+  query.set('order', params.order)
+  if (params.status) query.set('status', params.status)
+  if (params.priority) query.set('priority', params.priority)
+  if (params.search) query.set('search', params.search)
+  return request(`/tickets?${query}`)
+}
+
+export async function createTicket(payload: {
+  title: string
+  description?: string
+  priority: Priority
+}): Promise<Ticket> {
+  return request('/tickets', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+}
+
+export async function updateStatus(id: number, status: Status): Promise<Ticket> {
+  return request(`/tickets/${id}/status`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status }),
+  })
+}
+
+export async function deleteTicket(id: number, token: string): Promise<void> {
+  return request(`/tickets/${id}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}` },
+  })
+}
+
+export async function login(username: string, password: string): Promise<{ access_token: string; token_type: string }> {
+  return request('/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password }),
+  })
+}
