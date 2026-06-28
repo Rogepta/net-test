@@ -18,6 +18,8 @@ class SortOrder(str, enum.Enum):
 
 
 class TicketCreate(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
     title: str = Field(..., min_length=3, max_length=120)
     description: str | None = Field(None, max_length=1000)
     priority: TicketPriority = TicketPriority.normal
@@ -63,7 +65,9 @@ class PaginatedTickets(BaseModel):
     total_pages: int
 
     @staticmethod
-    def build(items: list, total: int, page: int, page_size: int) -> "PaginatedTickets":
+    def build(
+        items: list[TicketRead], total: int, page: int, page_size: int
+    ) -> "PaginatedTickets":
         return PaginatedTickets(
             items=items,
             total=total,

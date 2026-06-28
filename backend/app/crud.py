@@ -1,14 +1,53 @@
 from sqlalchemy import case
 from sqlalchemy.orm import Session
 
-from app.models import Ticket, TicketPriority, TicketStatus
+from app.config import settings
+from app.models import Ticket, TicketPriority, TicketStatus, User
 from app.schemas import SortBy, SortOrder, TicketCreate
+from app.security import hash_password
+
+class TicketDoneError(Exception):
+    def __init__(self, message: str) -> None:
+        super().__init__(message)
+        self.message = message
+
 
 _PRIORITY_ORDER = case(
     (Ticket.priority == TicketPriority.low, 1),
     (Ticket.priority == TicketPriority.normal, 2),
     (Ticket.priority == TicketPriority.high, 3),
 )
+
+_LIKE_ESCAPE = "\\"
+
+
+def _escape_like(term: str) -> str:
+    return (
+        term.replace(_LIKE_ESCAPE, _LIKE_ESCAPE * 2)
+        .replace("%", f"{_LIKE_ESCAPE}%")
+        .replace("_", f"{_LIKE_ESCAPE}_")
+    )
+
+
+def get_user_by_username(db: Session, username: str) -> User | None:
+    return db.query(User).filter(User.username == username).first()
+
+
+def ensure_admin_user(db: Session) -> None:
+    if get_user_by_username(db, settings.admin_username) is not None:
+        return
+    db.add(
+        User(
+            username=settings.admin_username,
+            hashed_password=hash_password(settings.admin_password),
+            is_admin=True,
+        )
+    )
+    db.commit()
+
+
+def get_ticket(db: Session, ticket_id: int) -> Ticket | None:
+    return db.get(Ticket, ticket_id)
 
 
 def create_ticket(db: Session, data: TicketCreate) -> Ticket:
@@ -20,6 +59,8 @@ def create_ticket(db: Session, data: TicketCreate) -> Ticket:
 
 
 def update_ticket_status(db: Session, ticket: Ticket, status: TicketStatus) -> Ticket:
+    if ticket.status == TicketStatus.done:
+        raise TicketDoneError("Нельзя изменить статус завершённой заявки")
     ticket.status = status
     db.commit()
     db.refresh(ticket)
@@ -27,6 +68,8 @@ def update_ticket_status(db: Session, ticket: Ticket, status: TicketStatus) -> T
 
 
 def delete_ticket(db: Session, ticket: Ticket) -> None:
+    if ticket.status == TicketStatus.done:
+        raise TicketDoneError("Нельзя удалить завершённую заявку")
     db.delete(ticket)
     db.commit()
 
@@ -48,8 +91,10 @@ def get_tickets(
     if priority is not None:
         q = q.filter(Ticket.priority == priority)
     if search:
+        pattern = f"%{_escape_like(search)}%"
         q = q.filter(
-            Ticket.title.ilike(f"%{search}%") | Ticket.description.ilike(f"%{search}%")
+            Ticket.title.ilike(pattern, escape=_LIKE_ESCAPE)
+            | Ticket.description.ilike(pattern, escape=_LIKE_ESCAPE)
         )
 
     sort_col = _PRIORITY_ORDER if sort_by == SortBy.priority else Ticket.created_at

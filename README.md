@@ -53,7 +53,26 @@ npm run dev
 | Логин | `admin` |
 | Пароль | `admin` |
 
-Перед развёртыванием в production смените `SECRET_KEY` в `backend/app/auth.py`.
+Значения по умолчанию пригодны только для разработки. Перед развёртыванием в production задайте переменные окружения (см. ниже) — при `ENVIRONMENT=production` приложение откажется стартовать с дефолтными `SECRET_KEY` и `ADMIN_PASSWORD`.
+
+---
+
+## Конфигурация (переменные окружения)
+
+Все настройки читаются из окружения; значения по умолчанию рассчитаны на локальную разработку.
+
+| Переменная | По умолчанию | Описание |
+|---|---|---|
+| `ENVIRONMENT` | `development` | При `production` включается проверка безопасных значений на старте |
+| `ADMIN_USERNAME` | `admin` | Логин администратора (создаётся при первом запуске) |
+| `ADMIN_PASSWORD` | `admin` | Пароль администратора |
+| `SECRET_KEY` | `change-me-in-production` | Ключ подписи JWT |
+| `JWT_ALGORITHM` | `HS256` | Алгоритм подписи JWT |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | `60` | Время жизни токена в минутах |
+| `DATABASE_URL` | `sqlite:///./tickets.db` | Строка подключения к БД |
+| `CORS_ORIGINS` | `http://localhost:5173,http://127.0.0.1:5173` | Разрешённые источники  |
+
+В режиме `ENVIRONMENT=production` приложение бросает ошибку при старте, если `SECRET_KEY` или `ADMIN_PASSWORD` остались дефолтными.
 
 ---
 
@@ -78,6 +97,8 @@ npm run dev
 | `POST` | `/tickets` | — | Создать заявку |
 | `PATCH` | `/tickets/{id}/status` | — | Изменить статус заявки |
 | `DELETE` | `/tickets/{id}` | Да | Удалить заявку |
+
+Завершённую заявку (`status = done`) нельзя редактировать или удалить — `PATCH` и `DELETE` в этом случае возвращают `409 Conflict`.
 
 **Параметры GET /tickets:**
 

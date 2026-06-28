@@ -1,19 +1,36 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
-from app.database import Base, engine
-from app.models import Ticket  # noqa: F401
+from app import crud
+from app.config import settings
+from app.database import Base, SessionLocal, engine
+from app.models import Ticket, User  # noqa: F401
 from app.routers import auth, tickets
 
+settings.validate()
+
 Base.metadata.create_all(bind=engine)
+
+with SessionLocal() as _db:
+    crud.ensure_admin_user(_db)
 
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=settings.cors_origins,
+    allow_methods=["GET", "POST", "PATCH", "DELETE"],
+    allow_headers=["Authorization", "Content-Type"],
 )
+
+
+@app.exception_handler(crud.TicketDoneError)
+def ticket_done_handler(request: Request, exc: crud.TicketDoneError) -> JSONResponse:
+    return JSONResponse(
+        status_code=status.HTTP_409_CONFLICT, content={"detail": exc.message}
+    )
+
+
 app.include_router(auth.router)
 app.include_router(tickets.router)
 
