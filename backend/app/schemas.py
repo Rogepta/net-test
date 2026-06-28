@@ -1,9 +1,20 @@
+import enum
 import math
 from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.models import TicketPriority, TicketStatus
+
+
+class SortBy(str, enum.Enum):
+    created_at = "created_at"
+    priority = "priority"
+
+
+class SortOrder(str, enum.Enum):
+    asc = "asc"
+    desc = "desc"
 
 
 class TicketCreate(BaseModel):
