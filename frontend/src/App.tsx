@@ -15,7 +15,7 @@ const DEFAULT_PARAMS: TicketQueryParams = {
   pageSize: 10,
 }
 
-export default function App() {
+const App = () => {
   const [params, setParams] = useState<TicketQueryParams>(DEFAULT_PARAMS)
   const [searchInput, setSearchInput] = useState('')
   const [adminToken, setAdminToken] = useState<string | null>(null)
@@ -27,23 +27,23 @@ export default function App() {
 
   const { data, isLoading, isError, error } = useTickets(params)
 
-  function handleStatusChange(status: Status | '') {
+  const handleStatusChange = (status: Status | '') => {
     setParams((prev) => ({ ...prev, status: status || undefined, page: 1 }))
   }
 
-  function handlePriorityChange(priority: Priority | '') {
+  const handlePriorityChange = (priority: Priority | '') => {
     setParams((prev) => ({ ...prev, priority: priority || undefined, page: 1 }))
   }
 
-  function handleSortByChange(sortBy: SortBy) {
+  const handleSortByChange = (sortBy: SortBy) => {
     setParams((prev) => ({ ...prev, sortBy, page: 1 }))
   }
 
-  function handleOrderChange(order: SortOrder) {
+  const handleOrderChange = (order: SortOrder) => {
     setParams((prev) => ({ ...prev, order, page: 1 }))
   }
 
-  function handlePageChange(page: number) {
+  const handlePageChange = (page: number) => {
     setParams((prev) => ({ ...prev, page }))
   }
 
@@ -82,3 +82,5 @@ export default function App() {
     </div>
   )
 }
+
+export default App

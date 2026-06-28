@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useCreateTicket } from '../hooks/useCreateTicket'
 import type { Priority } from '../types'
 
-export default function CreateTicketForm() {
+const CreateTicketForm = () => {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [priority, setPriority] = useState<Priority>('normal')
@@ -15,7 +15,7 @@ export default function CreateTicketForm() {
     setClientError(null)
   })
 
-  function handleSubmit(e: React.FormEvent) {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     const trimmed = title.trim()
     if (trimmed.length < 3 || trimmed.length > 120) {
@@ -64,3 +64,5 @@ export default function CreateTicketForm() {
     </form>
   )
 }
+
+export default CreateTicketForm

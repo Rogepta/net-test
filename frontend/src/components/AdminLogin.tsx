@@ -5,13 +5,13 @@ interface Props {
   onLogin: (token: string) => void
 }
 
-export default function AdminLogin({ onLogin }: Props) {
+const AdminLogin = ({ onLogin }: Props) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
-  async function handleSubmit(e: FormEvent) {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError(null)
     setLoading(true)
@@ -45,3 +45,5 @@ export default function AdminLogin({ onLogin }: Props) {
     </form>
   )
 }
+
+export default AdminLogin

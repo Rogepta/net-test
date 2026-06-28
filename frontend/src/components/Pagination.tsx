@@ -4,7 +4,7 @@ interface Props {
   onPageChange: (page: number) => void
 }
 
-export default function Pagination({ page, totalPages, onPageChange }: Props) {
+const Pagination = ({ page, totalPages, onPageChange }: Props) => {
   if (totalPages <= 1) return null
 
   return (
@@ -21,3 +21,5 @@ export default function Pagination({ page, totalPages, onPageChange }: Props) {
     </div>
   )
 }
+
+export default Pagination

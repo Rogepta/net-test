@@ -9,15 +9,15 @@ interface RowProps {
   adminToken: string | null
 }
 
-function TicketRow({ ticket, adminToken }: RowProps) {
+const TicketRow = ({ ticket, adminToken }: RowProps) => {
   const updateStatus = useUpdateStatus()
   const deleteTicket = useDeleteTicket()
 
-  function handleStatusChange(e: React.ChangeEvent<HTMLSelectElement>) {
+  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     updateStatus.mutate({ id: ticket.id, status: e.target.value as Status })
   }
 
-  function handleDelete() {
+  const handleDelete = () => {
     if (adminToken) {
       deleteTicket.mutate({ id: ticket.id, token: adminToken })
     }
@@ -63,7 +63,7 @@ interface Props {
   adminToken: string | null
 }
 
-export default function TicketTable({ tickets, isLoading, isError, error, adminToken }: Props) {
+const TicketTable = ({ tickets, isLoading, isError, error, adminToken }: Props) => {
   if (isLoading) {
     return <p>Loading...</p>
   }
@@ -96,3 +96,5 @@ export default function TicketTable({ tickets, isLoading, isError, error, adminT
     </table>
   )
 }
+
+export default TicketTable

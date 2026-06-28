@@ -2,7 +2,7 @@ import type { PaginatedResponse, Priority, Status, Ticket, TicketQueryParams } f
 
 const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8000'
 
-async function request<T>(path: string, options?: RequestInit): Promise<T> {
+const request = async <T>(path: string, options?: RequestInit): Promise<T> => {
   const res = await fetch(`${BASE_URL}${path}`, options)
   if (!res.ok) {
     let detail = res.statusText
@@ -18,7 +18,7 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   return res.json()
 }
 
-export async function fetchTickets(params: TicketQueryParams): Promise<PaginatedResponse<Ticket>> {
+export const fetchTickets = async (params: TicketQueryParams): Promise<PaginatedResponse<Ticket>> => {
   const query = new URLSearchParams()
   query.set('page', String(params.page))
   query.set('page_size', String(params.pageSize))
@@ -30,11 +30,11 @@ export async function fetchTickets(params: TicketQueryParams): Promise<Paginated
   return request(`/tickets?${query}`)
 }
 
-export async function createTicket(payload: {
+export const createTicket = async (payload: {
   title: string
   description?: string
   priority: Priority
-}): Promise<Ticket> {
+}): Promise<Ticket> => {
   return request('/tickets', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -42,7 +42,7 @@ export async function createTicket(payload: {
   })
 }
 
-export async function updateStatus(id: number, status: Status): Promise<Ticket> {
+export const updateStatus = async (id: number, status: Status): Promise<Ticket> => {
   return request(`/tickets/${id}/status`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
@@ -50,14 +50,14 @@ export async function updateStatus(id: number, status: Status): Promise<Ticket> 
   })
 }
 
-export async function deleteTicket(id: number, token: string): Promise<void> {
+export const deleteTicket = async (id: number, token: string): Promise<void> => {
   return request(`/tickets/${id}`, {
     method: 'DELETE',
     headers: { Authorization: `Bearer ${token}` },
   })
 }
 
-export async function login(username: string, password: string): Promise<{ access_token: string; token_type: string }> {
+export const login = async (username: string, password: string): Promise<{ access_token: string; token_type: string }> => {
   return request('/auth/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

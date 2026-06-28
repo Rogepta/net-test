@@ -13,7 +13,7 @@ interface Props {
   onOrderChange: (value: SortOrder) => void
 }
 
-export default function FilterBar({
+const FilterBar = ({
   search,
   status,
   priority,
@@ -24,7 +24,7 @@ export default function FilterBar({
   onPriorityChange,
   onSortByChange,
   onOrderChange,
-}: Props) {
+}: Props) => {
   return (
     <div>
       <input
@@ -60,3 +60,5 @@ export default function FilterBar({
     </div>
   )
 }
+
+export default FilterBar
