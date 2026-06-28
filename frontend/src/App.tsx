@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import CreateTicketForm from './components/CreateTicketForm'
 import FilterBar from './components/FilterBar'
 import Pagination from './components/Pagination'
 import TicketTable from './components/TicketTable'
@@ -46,6 +47,7 @@ export default function App() {
 
   return (
     <div>
+      <CreateTicketForm />
       <FilterBar
         search={searchInput}
         status={params.status ?? ''}
