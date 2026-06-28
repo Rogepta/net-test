@@ -35,6 +35,10 @@ class TicketRead(BaseModel):
     updated_at: datetime
 
 
+class TicketStatusUpdate(BaseModel):
+    status: TicketStatus
+
+
 class PaginatedTickets(BaseModel):
     items: list[TicketRead]
     total: int
