@@ -1,6 +1,8 @@
+import { useCallback } from 'react'
 import { useDeleteTicket } from '../../hooks/useDeleteTicket'
 import { useUpdateStatus } from '../../hooks/useUpdateStatus'
 import type { Status, Ticket } from '../../types'
+import Toast from '../Toast'
 import TableHead from './parts/TableHead'
 import TableSkeleton from './parts/TableSkeleton'
 import { EmptyState, ErrorState } from './parts/TableState'
@@ -20,6 +22,11 @@ const TicketTable = ({ tickets, isLoading, isFetching, isError, error, adminToke
   const updateStatus = useUpdateStatus()
   const deleteTicket = useDeleteTicket()
   const mutationError = updateStatus.error ?? deleteTicket.error
+
+  const resetMutations = useCallback(() => {
+    updateStatus.reset()
+    deleteTicket.reset()
+  }, [updateStatus.reset, deleteTicket.reset])
 
   const handleStatusChange = (id: number, status: Status) => {
     updateStatus.mutate({ id, status })
@@ -41,11 +48,7 @@ const TicketTable = ({ tickets, isLoading, isFetching, isError, error, adminToke
 
   return (
     <div className={isFetching ? styles.fetching : undefined} aria-busy={isFetching}>
-      {mutationError && (
-        <div className={styles.mutationError} role="alert">
-          {mutationError.message}
-        </div>
-      )}
+      {mutationError && <Toast message={mutationError.message} onClose={resetMutations} />}
       <TableHead />
       {tickets.map((ticket) => (
         <TicketRow
