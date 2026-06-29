@@ -13,5 +13,4 @@ dist/
 .env
 .venv/
 
-.md
 .vscode
