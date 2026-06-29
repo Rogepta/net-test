@@ -6,10 +6,16 @@ from app.models import Ticket, TicketPriority, TicketStatus, User
 from app.schemas import SortBy, SortOrder, TicketCreate
 from app.security import hash_password
 
+
 class TicketDoneError(Exception):
     def __init__(self, message: str) -> None:
         super().__init__(message)
         self.message = message
+
+
+def _ensure_not_done(ticket: Ticket, action: str) -> None:
+    if ticket.status == TicketStatus.done:
+        raise TicketDoneError(f"Нельзя {action} завершённую заявку")
 
 
 _PRIORITY_ORDER = case(
@@ -59,8 +65,7 @@ def create_ticket(db: Session, data: TicketCreate) -> Ticket:
 
 
 def update_ticket_status(db: Session, ticket: Ticket, status: TicketStatus) -> Ticket:
-    if ticket.status == TicketStatus.done:
-        raise TicketDoneError("Нельзя изменить статус завершённой заявки")
+    _ensure_not_done(ticket, "изменить статус")
     ticket.status = status
     db.commit()
     db.refresh(ticket)
@@ -68,8 +73,7 @@ def update_ticket_status(db: Session, ticket: Ticket, status: TicketStatus) -> T
 
 
 def delete_ticket(db: Session, ticket: Ticket) -> None:
-    if ticket.status == TicketStatus.done:
-        raise TicketDoneError("Нельзя удалить завершённую заявку")
+    _ensure_not_done(ticket, "удалить")
     db.delete(ticket)
     db.commit()
 

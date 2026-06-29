@@ -36,5 +36,5 @@ app.include_router(tickets.router)
 
 
 @app.get("/health")
-def health():
+def health() -> dict[str, str]:
     return {"status": "ok"}
