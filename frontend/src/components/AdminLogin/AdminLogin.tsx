@@ -1,5 +1,5 @@
-import { type FormEvent, useState } from 'react'
-import { login } from '../../api'
+import { type FormEvent, useEffect, useState } from 'react'
+import { useLogin } from '../../hooks/useLogin'
 import styles from './AdminLogin.module.css'
 
 interface Props {
@@ -9,21 +9,17 @@ interface Props {
 const AdminLogin = ({ onLogin }: Props) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
+  const { mutate, isPending, error, reset } = useLogin(onLogin)
 
-  const handleSubmit = async (e: FormEvent) => {
+  useEffect(() => {
+    if (!error) return
+    const timer = setTimeout(reset, 4000)
+    return () => clearTimeout(timer)
+  }, [error, reset])
+
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
-    setError(null)
-    setLoading(true)
-    try {
-      const data = await login(username, password)
-      onLogin(data.access_token)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed')
-    } finally {
-      setLoading(false)
-    }
+    mutate({ username, password })
   }
 
   return (
@@ -41,10 +37,14 @@ const AdminLogin = ({ onLogin }: Props) => {
         placeholder="Password"
         onChange={(e) => setPassword(e.target.value)}
       />
-      <button className={styles.loginBtn} type="submit" disabled={loading}>
+      <button className={styles.loginBtn} type="submit" disabled={isPending}>
         Войти
       </button>
-      {error && <span className={styles.error}>{error}</span>}
+      {error && (
+        <div className={styles.toast} role="alert">
+          {error.message}
+        </div>
+      )}
     </form>
   )
 }

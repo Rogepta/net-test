@@ -40,8 +40,8 @@ const CreateTicketForm = () => {
             className={`${styles.input} ${clientError ? styles.inputError : ''}`}
             type="text"
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
             disabled={isPending}
+            onChange={(e) => setTitle(e.target.value)}
           />
           {clientError && (
             <span className={styles.errorRow}>
@@ -60,8 +60,8 @@ const CreateTicketForm = () => {
             className={styles.textarea}
             rows={3}
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
             disabled={isPending}
+            onChange={(e) => setDescription(e.target.value)}
           />
         </div>
 
@@ -76,8 +76,8 @@ const CreateTicketForm = () => {
           <select
             className={styles.select}
             value={priority}
-            onChange={(e) => setPriority(e.target.value as Priority)}
             disabled={isPending}
+            onChange={(e) => setPriority(e.target.value as Priority)}
           >
             <option value="low">Low</option>
             <option value="normal">Normal</option>

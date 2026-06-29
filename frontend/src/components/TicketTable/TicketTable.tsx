@@ -34,23 +34,22 @@ const TableHead = () => (
 interface RowProps {
   ticket: Ticket
   adminToken: string | null
+  isUpdating: boolean
+  isDeleting: boolean
+  onStatusChange: (id: number, status: Status) => void
+  onDelete: (id: number) => void
 }
 
-const TicketRow = ({ ticket, adminToken }: RowProps) => {
-  const updateStatus = useUpdateStatus()
-  const deleteTicket = useDeleteTicket()
-
+const TicketRow = ({ ticket, adminToken, isUpdating, isDeleting, onStatusChange, onDelete }: RowProps) => {
   const isDone = ticket.status === 'done'
   const canDelete = Boolean(adminToken)
 
   const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    updateStatus.mutate({ id: ticket.id, status: e.target.value as Status })
+    onStatusChange(ticket.id, e.target.value as Status)
   }
 
   const handleDelete = () => {
-    if (adminToken) {
-      deleteTicket.mutate({ id: ticket.id, token: adminToken })
-    }
+    onDelete(ticket.id)
   }
 
   return (
@@ -61,7 +60,7 @@ const TicketRow = ({ ticket, adminToken }: RowProps) => {
       <select
         className={`${styles.statusSelect} ${STATUS_CLASS[ticket.status]}`}
         value={ticket.status}
-        disabled={isDone}
+        disabled={isDone || isUpdating}
         title={isDone ? 'Готовые заявки не редактируются' : undefined}
         onChange={handleStatusChange}
       >
@@ -78,7 +77,7 @@ const TicketRow = ({ ticket, adminToken }: RowProps) => {
       <span className={styles.action}>
         <button
           className={`${styles.trash} ${canDelete ? styles.trashActive : ''}`}
-          disabled={!canDelete || deleteTicket.isPending}
+          disabled={!canDelete || isDeleting}
           title={canDelete ? undefined : 'Доступно только администратору'}
           onClick={handleDelete}
         >
@@ -106,6 +105,20 @@ interface Props {
 }
 
 const TicketTable = ({ tickets, isLoading, isError, error, adminToken }: Props) => {
+  const updateStatus = useUpdateStatus()
+  const deleteTicket = useDeleteTicket()
+  const mutationError = updateStatus.error ?? deleteTicket.error
+
+  const handleStatusChange = (id: number, status: Status) => {
+    updateStatus.mutate({ id, status })
+  }
+
+  const handleDelete = (id: number) => {
+    if (adminToken) {
+      deleteTicket.mutate({ id, token: adminToken })
+    }
+  }
+
   if (isLoading) {
     return (
       <div>
@@ -162,9 +175,22 @@ const TicketTable = ({ tickets, isLoading, isError, error, adminToken }: Props) 
 
   return (
     <div>
+      {mutationError && (
+        <div className={styles.mutationError} role="alert">
+          {mutationError.message}
+        </div>
+      )}
       <TableHead />
       {tickets.map((ticket) => (
-        <TicketRow key={ticket.id} ticket={ticket} adminToken={adminToken} />
+        <TicketRow
+          key={ticket.id}
+          ticket={ticket}
+          adminToken={adminToken}
+          isUpdating={updateStatus.isPending && updateStatus.variables?.id === ticket.id}
+          isDeleting={deleteTicket.isPending && deleteTicket.variables?.id === ticket.id}
+          onStatusChange={handleStatusChange}
+          onDelete={handleDelete}
+        />
       ))}
     </div>
   )
