@@ -2,11 +2,11 @@ import { type FormEvent, useEffect, useState } from 'react'
 import { useLogin } from '../../hooks/useLogin'
 import styles from './AdminLogin.module.css'
 
-interface Props {
+interface IAdminLoginProps {
   onLogin: (token: string) => void
 }
 
-const AdminLogin = ({ onLogin }: Props) => {
+const AdminLogin = ({ onLogin }: IAdminLoginProps) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const { mutate, isPending, error, reset } = useLogin(onLogin)
@@ -26,6 +26,8 @@ const AdminLogin = ({ onLogin }: Props) => {
     <form className={styles.form} onSubmit={handleSubmit}>
       <input
         className={styles.input}
+        name="username"
+        autoComplete="username"
         value={username}
         placeholder="Username"
         onChange={(e) => setUsername(e.target.value)}
@@ -33,6 +35,8 @@ const AdminLogin = ({ onLogin }: Props) => {
       <input
         className={styles.input}
         type="password"
+        name="password"
+        autoComplete="current-password"
         value={password}
         placeholder="Password"
         onChange={(e) => setPassword(e.target.value)}

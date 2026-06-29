@@ -4,9 +4,10 @@ import Pagination from '../Pagination'
 import TicketTable from '../TicketTable'
 import styles from './TicketsSection.module.css'
 
-interface Props {
+interface ITicketsSectionProps {
   tickets: Ticket[]
   isLoading: boolean
+  isFetching: boolean
   isError: boolean
   error: Error | null
   adminToken: string | null
@@ -28,6 +29,7 @@ interface Props {
 const TicketsSection = ({
   tickets,
   isLoading,
+  isFetching,
   isError,
   error,
   adminToken,
@@ -44,7 +46,7 @@ const TicketsSection = ({
   onSortByChange,
   onOrderChange,
   onPageChange,
-}: Props) => {
+}: ITicketsSectionProps) => {
   return (
     <section className={styles.tableCard}>
       <FilterBar
@@ -62,6 +64,7 @@ const TicketsSection = ({
       <TicketTable
         tickets={tickets}
         isLoading={isLoading}
+        isFetching={isFetching}
         isError={isError}
         error={error}
         adminToken={adminToken}

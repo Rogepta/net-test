@@ -1,12 +1,12 @@
 import styles from './Pagination.module.css'
 
-interface Props {
+interface IPaginationProps {
   page: number
   totalPages: number
   onPageChange: (page: number) => void
 }
 
-const Pagination = ({ page, totalPages, onPageChange }: Props) => {
+const Pagination = ({ page, totalPages, onPageChange }: IPaginationProps) => {
   if (totalPages <= 1) return null
 
   return (

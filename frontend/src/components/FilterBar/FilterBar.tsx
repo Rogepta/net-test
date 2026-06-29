@@ -1,7 +1,7 @@
 import type { Priority, SortBy, SortOrder, Status } from '../../types'
 import styles from './FilterBar.module.css'
 
-interface Props {
+interface IFilterBarProps {
   search: string
   status: Status | ''
   priority: Priority | ''
@@ -25,7 +25,7 @@ const FilterBar = ({
   onPriorityChange,
   onSortByChange,
   onOrderChange,
-}: Props) => {
+}: IFilterBarProps) => {
   return (
     <div className={styles.toolbar}>
       <input

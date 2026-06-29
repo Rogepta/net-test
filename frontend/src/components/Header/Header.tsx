@@ -1,13 +1,13 @@
 import AdminLogin from '../AdminLogin'
 import styles from './Header.module.css'
 
-interface Props {
+interface IHeaderProps {
   adminToken: string | null
   onLogin: (token: string) => void
   onLogout: () => void
 }
 
-const Header = ({ adminToken, onLogin, onLogout }: Props) => {
+const Header = ({ adminToken, onLogin, onLogout }: IHeaderProps) => {
   const account = adminToken ? (
     <div className={styles.userBox}>
       <span className={styles.avatar}>AD</span>

@@ -189,6 +189,12 @@
   100% { background-position: 360px 0; }
 }
 
+.fetching {
+  opacity: 0.6;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
 .mutationError {
   margin: 10px 16px 0;
   padding: 9px 12px;

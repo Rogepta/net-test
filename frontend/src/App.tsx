@@ -24,7 +24,15 @@ const App = () => {
     setParams(prev => ({ ...prev, search: debouncedSearch || undefined, page: 1 }))
   }, [debouncedSearch])
 
-  const { data, isLoading, isError, error } = useTickets(params)
+  const { data, isLoading, isFetching, isError, error } = useTickets(params)
+
+  const totalPages = data?.total_pages
+
+  useEffect(() => {
+    if (totalPages && params.page > totalPages) {
+      setParams(prev => ({ ...prev, page: totalPages }))
+    }
+  }, [totalPages, params.page])
 
   const handleStatusChange = (status: Status | '') => {
     setParams(prev => ({ ...prev, status: status || undefined, page: 1 }))
@@ -60,6 +68,7 @@ const App = () => {
         <TicketsSection
           tickets={data?.items ?? []}
           isLoading={isLoading}
+          isFetching={isFetching}
           isError={isError}
           error={error}
           adminToken={adminToken}
@@ -69,7 +78,7 @@ const App = () => {
           sortBy={params.sortBy}
           order={params.order}
           page={params.page}
-          totalPages={data?.total_pages ?? 1}
+          totalPages={totalPages ?? 1}
           onSearchChange={setSearchInput}
           onStatusChange={handleStatusChange}
           onPriorityChange={handlePriorityChange}
